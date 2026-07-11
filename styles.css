@@ -296,12 +296,63 @@ section {
     box-shadow: var(--shadow-md);
     transition: all 0.3s ease;
     border: 1px solid var(--border-color);
+    position: relative;
+    overflow: visible;
 }
 
 .project-card:hover {
     transform: translateY(-5px);
     box-shadow: var(--shadow-xl);
     border-color: var(--primary-color);
+}
+
+/* Project Popup Styling */
+.project-popup {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-xl);
+    border: 2px solid var(--primary-color);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 10;
+    max-height: 0;
+    overflow: hidden;
+}
+
+.project-card:hover .project-popup {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.popup-content {
+    font-size: 0.9rem;
+}
+
+.popup-content h4 {
+    color: var(--primary-color);
+    font-size: 1rem;
+    margin: 1rem 0 0.5rem 0;
+    font-weight: 600;
+}
+
+.popup-content h4:first-child {
+    margin-top: 0;
+}
+
+.popup-content p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
 }
 
 .project-header {

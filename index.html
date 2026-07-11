@@ -35,10 +35,11 @@
         <div class="container">
             <div class="hero-content">
                 <h1 class="hero-title">Songlin (Ray) Hou</h1>
-                <p class="hero-subtitle">Senior Software Engineer | AI & Analytics Expert | Technical Leader</p>
-                <p class="hero-description">5+ years Dell tech leader driving innovation in security automation, predictive analytics, and AI-assisted troubleshooting</p>
+                <p class="hero-subtitle"> Software Engineer | AI & Analytics Expert | Technical Leader</p>
+                <p class="hero-description">5+ years Dell tech leader + researcher driving innovation in security automation, predictive analytics, and AI-assisted troubleshooting</p>
                 <div class="hero-buttons">
-                    <a href="#projects" class="btn btn-primary">View Projects</a>
+                    <a href="#projects" class="btn btn-primary">Projects</a>
+                    <a href="https://songlinhou.github.io/" class="btn btn-secondary" target="_blank">Research</a>
                     <a href="#contact" class="btn btn-secondary">Get In Touch</a>
                 </div>
             </div>
@@ -52,6 +53,7 @@
             <div class="about-content">
                 <p>As an A-Team member for 5 years at Dell Technologies, I have consistently taken ownership of highly visible and technically complex projects across ControlPath, including security automation, predictive analytics, AI-assisted troubleshooting, platform integration, containerization, and anomaly detection.</p>
                 <p>My contributions span system architecture, backend development, cross-functional collaboration, testing, and operational support, helping drive innovation and maintainability across the ControlPath ecosystem.</p>
+                <p>Beyond traditional AI/ML, I specialize in Large Language Model (LLM) systems with expertise in multi-agentic system design, tool calling frameworks, and model fine-tuning. I design and implement AI agents that can reason, plan, and execute complex tasks through coordinated multi-agent workflows, leveraging advanced techniques like function calling, RAG (Retrieval-Augmented Generation), and prompt engineering to build production-ready AI solutions.</p>
                 <div class="skills-grid">
                     <div class="skill-card">
                         <h3>Security & Authentication</h3>
@@ -60,6 +62,10 @@
                     <div class="skill-card">
                         <h3>AI & Machine Learning</h3>
                         <p>Anomaly Detection, Predictive Analytics, NLP, Semantic Search</p>
+                    </div>
+                    <div class="skill-card">
+                        <h3>LLM Systems</h3>
+                        <p>Multi-Agent Systems, Tool Calling, Fine-tuning, RAG, Prompt Engineering</p>
                     </div>
                     <div class="skill-card">
                         <h3>Platform Engineering</h3>
@@ -102,6 +108,16 @@
                         <span class="tag">Authentication</span>
                         <span class="tag">Automation</span>
                     </div>
+                    <div class="project-popup">
+                        <div class="popup-content">
+                            <h4>Detailed Overview</h4>
+                            <p>This project was critical for enabling PowerStore sales to Federal customers by implementing CAC/PIV-based authentication. I led the development of the cert_task (PKI-script) framework in collaboration with team members.</p>
+                            <h4>Technical Implementation</h4>
+                            <p>The solution involved building a complete certificate lifecycle management system that handles generation, provisioning, role mapping, and automated deployment. It integrates seamlessly with PowerStore infrastructure and supports multi-factor authentication with OCSP-based validation.</p>
+                            <h4>Impact</h4>
+                            <p>Successfully delivered the feature to Definition of Done milestone on time, enabling Federal customer sales and significantly reducing manual certificate management overhead while strengthening security compliance.</p>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Bug-Stomp Project -->
@@ -126,6 +142,16 @@
                         <span class="tag">Search</span>
                         <span class="tag">Analytics</span>
                     </div>
+                    <div class="project-popup">
+                        <div class="popup-content">
+                            <h4>Detailed Overview</h4>
+                            <p>Bug-Stomp was designed to accelerate issue diagnosis and improve engineering productivity by leveraging historical support tickets and defect records. The system helps engineers quickly find similar issues and previously implemented resolutions.</p>
+                            <h4>Technical Implementation</h4>
+                            <p>I developed a semantic search framework that analyzes historical support tickets and defect records. The system uses machine learning and natural language processing techniques to improve ticket correlation and root-cause analysis, enabling identification of similar issues and recurring defect patterns.</p>
+                            <h4>Impact</h4>
+                            <p>Significantly reduced troubleshooting time and increased knowledge reuse across engineering teams. The solution helps new engineers learn from past issues and enables faster resolution of recurring problems.</p>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Performance Forecast Integration -->
@@ -149,6 +175,16 @@
                         <span class="tag">Forecasting</span>
                         <span class="tag">Python</span>
                         <span class="tag">Architecture</span>
+                    </div>
+                    <div class="project-popup">
+                        <div class="popup-content">
+                            <h4>Detailed Overview</h4>
+                            <p>The Performance Forecast capability was originally implemented as standalone Python utilities. I led the initiative to integrate this functionality into the ControlPath platform, making it accessible to users through the main interface.</p>
+                            <h4>Technical Implementation</h4>
+                            <p>I designed and implemented the ControlPath integration architecture, developing ApplicationService bindings and service orchestration components. The work involved integrating forecasting data into the ControlPath persistence layer and backend services, with UI integration in partnership with team members.</p>
+                            <h4>Impact</h4>
+                            <p>Successfully delivered a fully integrated forecasting workflow within the ControlPath ecosystem. The integration required careful coordination on result validation, functional testing, and defect remediation to ensure quality delivery.</p>
+                        </div>
                     </div>
                 </div>
 
@@ -175,6 +211,16 @@
                         <span class="tag">Microservices</span>
                         <span class="tag">DevOps</span>
                     </div>
+                    <div class="project-popup">
+                        <div class="popup-content">
+                            <h4>Detailed Overview</h4>
+                            <p>The Analytics Engine was previously embedded within the ControlPath container as part of a monolithic deployment. I led the modernization effort to containerize it as a separate service, improving system architecture and deployment practices.</p>
+                            <h4>Technical Implementation</h4>
+                            <p>I architected and implemented the Dockerization strategy for the Analytics Engine. Working with team members, we decoupled the analytics service from the monolithic deployment model, creating a separate containerized service.</p>
+                            <h4>Impact</h4>
+                            <p>The modernization significantly improved system modularity, maintainability, and deployment flexibility. It enabled independent lifecycle management, scalability, and versioning of analytics components, while simplifying development, testing, and release processes through containerized deployment.</p>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Anomaly Detection Platform -->
@@ -199,6 +245,16 @@
                         <span class="tag">Anomaly Detection</span>
                         <span class="tag">Monitoring</span>
                         <span class="tag">Analytics</span>
+                    </div>
+                    <div class="project-popup">
+                        <div class="popup-content">
+                            <h4>Detailed Overview</h4>
+                            <p>I served as the primary developer for the Anomaly Detection initiative over a two-year period, contributing to its design, implementation, validation, and long-term maintenance. This capability had been in the backlog for over a year before delivery.</p>
+                            <h4>Technical Implementation</h4>
+                            <p>I developed anomaly detection functionality across both the Analytics Engine and ControlPath platform. The work included implementing detection algorithms, service integration layers, and alerting workflows. I collaborated with team members on feature development and validation.</p>
+                            <h4>Impact</h4>
+                            <p>Led testing efforts, performance tuning, and production-quality hardening. Provided ongoing maintenance, issue resolution, and feature enhancements following deployment. The capability contributed to improving proactive system monitoring and identification of abnormal operational behaviors, with recognition from leadership for the team's dedication to delivery.</p>
+                        </div>
                     </div>
                 </div>
             </div>

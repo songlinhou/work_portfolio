@@ -414,6 +414,27 @@ async function initializeWebLLM() {
     }
 }
 
+function linkifyText(text) {
+    if (!text) return '';
+    const escaped = text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    return escaped.replace(/https?:\/\/[^\s<]+|www\.[^\s<]+/g, (match) => {
+        let url = match;
+        let suffix = '';
+        const trailing = /[.,;:!?\)\]\}'"]+$/;
+        if (trailing.test(url)) {
+            const trailingChars = url.match(trailing)[0];
+            suffix = trailingChars;
+            url = url.slice(0, -trailingChars.length);
+        }
+        const href = url.startsWith('www.') ? 'https://' + url : url;
+        return `<a href="${href}" target="_blank" rel="noopener noreferrer">${url}</a>${suffix}`;
+    });
+}
+
 function addMessage(text, isUser = false, streaming = false) {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
@@ -421,10 +442,18 @@ function addMessage(text, isUser = false, streaming = false) {
     messageDiv.appendChild(p);
     chatbotMessages.appendChild(messageDiv);
     if (!streaming && text) {
-        p.textContent = text;
+        p.innerHTML = isUser ? escapeHtml(text) : linkifyText(text);
     }
     chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
     return p;
+}
+
+function escapeHtml(text) {
+    return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
 }
 
 async function sendMessage() {
@@ -468,6 +497,7 @@ async function sendMessage() {
                 chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
             }
         }
+        botP.innerHTML = linkifyText(botResponse);
     } catch (error) {
         console.error("Error generating response:", error);
         addMessage("Sorry, I encountered an error generating a response. Please try again.", false);

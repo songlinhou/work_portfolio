@@ -396,7 +396,7 @@ async function initializeWebLLM() {
         
         // Hide progress bar and show ready message
         chatbotProgress.style.display = 'none';
-        addMessage("Do you have any questions about me? I am happy to answer!", false);
+        addMessage("Do you have any questions about me? I am happy to answer now!", false);
         
     } catch (error) {
         console.error("Failed to load WebLLM:", error);
@@ -406,7 +406,7 @@ async function initializeWebLLM() {
         // Hide progress bar
         chatbotProgress.style.display = 'none';
         
-        addMessage("Sorry, I couldn't load the AI model. Please try again later or refresh the page.", false);
+        addMessage("Oops, I couldn't load the AI brain. Please try again later or refresh the page. You can use the 'Send Message' button in the 'Get In Touch' section to contact me too.", false);
         
         // Fallback to simple responses
         useFallbackResponses();
@@ -438,7 +438,7 @@ async function sendMessage() {
         if (!isModelLoading) {
             initializeWebLLM();
         } else {
-            addMessage("Please wait a moment for my AI brain to load...", false);
+            addMessage("Please wait a moment for my AI brain to load... You can also send me a message using the 'Send Message' button in the \"Get In Touch\" section.", false);
         }
         return;
     }

@@ -514,10 +514,10 @@ async function sendMessage() {
 // Fallback responses if WebLLM fails
 function useFallbackResponses() {
     const fallbackResponses = {
-        'experience': 'Songlin has 5+ years of experience as a Dell A-Team member, leading complex projects in security automation, predictive analytics, AI-assisted troubleshooting, and anomaly detection.',
+        'experience': 'Songlin has 5+ years of experience as a Dell software engineer, leading complex projects in security automation, predictive analytics, AI-assisted troubleshooting, and anomaly detection.',
         'projects': 'Songlin has led several key projects including CAC/PIV Certificate Management, Bug-Stomp Initiative, Performance Forecast Integration, Analytics Engine Dockerization, and Anomaly Detection Platform.',
         'skills': 'Songlin specializes in Security & Authentication, AI & Machine Learning, LLM Systems, Platform Engineering, and Technical Leadership.',
-        'contact': 'You can reach Songlin via email at songlinhou1993@gmail.com or LinkedIn at https://www.linkedin.com/in/songlin-hou',
+        'contact': 'You can reach Songlin via email at songlinhou1993@gmail.com or LinkedIn at https://www.linkedin.com/in/songlin-hou. You can also use the contact form on this website.',
         'default': 'I\'m here to help! You can ask about Songlin\'s experience, projects, skills, or how to contact him.'
     };
     

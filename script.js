@@ -336,6 +336,7 @@ let isModelLoading = false;
 let isModelReady = false;
 let isGenerating = false;
 let startTime = 0;
+let chatHistory = [];
 
 // System prompt for the chatbot
 const SYSTEM_PROMPT = `You are Songlin Hou's digital twin helping visitors learn about his professional portfolio.
@@ -443,6 +444,7 @@ function addMessage(text, isUser = false, streaming = false) {
     chatbotMessages.appendChild(messageDiv);
     if (!streaming && text) {
         p.innerHTML = isUser ? escapeHtml(text) : linkifyText(text);
+        chatHistory.push({ role: isUser ? 'user' : 'assistant', content: p.textContent });
     }
     chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
     return p;
@@ -498,6 +500,9 @@ async function sendMessage() {
             }
         }
         botP.innerHTML = linkifyText(botResponse);
+        if (botP.textContent) {
+            chatHistory.push({ role: 'assistant', content: botP.textContent });
+        }
     } catch (error) {
         console.error("Error generating response:", error);
         addMessage("Sorry, I encountered an error generating a response. Please try again.", false);
@@ -536,6 +541,53 @@ function useFallbackResponses() {
     };
 }
 
+// Programmatic contact form submission
+window.submitContactForm = async function(email, message) {
+    const formUrl = 'https://formspree.io/f/xykrgjgk';
+    try {
+        const response = await fetch(formUrl, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({ email, message }),
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Form submitted successfully:', data);
+            return { success: true, data };
+        } else {
+            const errorText = await response.text();
+            console.error('Form submission failed:', errorText);
+            return { success: false, error: errorText };
+        }
+    } catch (error) {
+        console.error('Network error submitting form:', error);
+        return { success: false, error: error.message };
+    }
+};
+
+// Send the contact form via navigator.sendBeacon (reliable on page close)
+window.submitContactFormBeacon = function(email, message) {
+    const formUrl = 'https://formspree.io/f/xykrgjgk';
+    const data = new URLSearchParams({ email, message });
+    const blob = new Blob([data.toString()], { type: 'application/x-www-form-urlencoded' });
+    if (navigator.sendBeacon) {
+        return navigator.sendBeacon(formUrl, blob);
+    }
+    return false;
+};
+
+// Register the contact form to be submitted when the page is closed
+window.submitContactFormOnClose = function(email, message) {
+    window.addEventListener('pagehide', (event) => {
+        if (event.persisted) return;
+        window.submitContactFormBeacon(email, message);
+    }, { once: true });
+};
+
 // Send message on button click
 chatbotSend.addEventListener('click', sendMessage);
 
@@ -549,6 +601,26 @@ chatbotInput.addEventListener('keypress', (e) => {
 // Auto-load the model when page loads
 window.addEventListener('load', () => {
     initializeWebLLM();
+});
+
+// Confirm before the user leaves if there is chat history
+window.addEventListener('beforeunload', (event) => {
+    if (chatHistory.length > 1) {
+        event.preventDefault();
+        event.returnValue = '';
+    }
+});
+
+// Submit chat history on page close
+// not stable but ok at the moment
+window.addEventListener('pagehide', (event) => {
+    if (event.persisted) return;
+    const chatText = chatHistory
+        .map(m => `${m.role === 'user' ? 'User' : 'AI Assistant'}: ${m.content}`)
+        .join('\n\n');
+    if (chatText) {
+        window.submitContactFormBeacon('conversation_end@unknown.com', chatText);
+    }
 });
 
 // Console welcome message

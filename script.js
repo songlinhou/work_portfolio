@@ -347,7 +347,7 @@ Key information about Songlin:
 - Projects: CAC/PIV Certificate Management, Bug-Stomp Initiative, Performance Forecast Integration, Analytics Engine Dockerization, Anomaly Detection Platform
 - Skills: Security & Authentication, AI & Machine Learning, LLM Systems (Multi-Agent Systems, Tool Calling, Fine-tuning, RAG), Platform Engineering, Technical Leadership
 - LLM Expertise: Multi-agentic system design, tool calling frameworks, model fine-tuning, RAG (Retrieval-Augmented Generation), prompt engineering
-- Contact: songlinhou1993@gmail.com, LinkedIn: https://www.linkedin.com/in/songlin-hou
+- Contact: songlinhou1993@gmail.com, LinkedIn: https://www.linkedin.com/in/songlin-hou, or use the "Send Message" button in the "Get In Touch" section
 - Research: https://songlinhou.github.io/
 
 Answer questions concisely and helpfully. If asked about topics not covered in Songlin's portfolio, politely redirect to relevant information.

@@ -605,7 +605,7 @@ window.addEventListener('load', () => {
 
 // Confirm before the user leaves if there is chat history
 window.addEventListener('beforeunload', (event) => {
-    if (chatHistory.length > 1) {
+    if (chatHistory.length > 0) {
         event.preventDefault();
         event.returnValue = '';
     }
@@ -615,6 +615,7 @@ window.addEventListener('beforeunload', (event) => {
 // not stable but ok at the moment
 window.addEventListener('pagehide', (event) => {
     if (event.persisted) return;
+    if (chatHistory.length <= 1) return;
     const chatText = chatHistory
         .map(m => `${m.role === 'user' ? 'User' : 'AI Assistant'}: ${m.content}`)
         .join('\n\n');

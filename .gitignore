@@ -1,0 +1,28 @@
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Environment / secrets
+.env
+.env.local
+
+# Node.js (if ever used)
+node_modules/
+package-lock.json
+
+# Build artifacts (if ever used)
+dist/
+build/
+.cache/

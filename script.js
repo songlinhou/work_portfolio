@@ -301,6 +301,225 @@ if ('IntersectionObserver' in window) {
     });
 }
 
+// Chatbot Widget Functionality
+const chatbotWidget = document.getElementById('chatbotWidget');
+const chatbotHeader = document.getElementById('chatbotHeader');
+const chatbotToggle = document.getElementById('chatbotToggle');
+const chatbotInput = document.getElementById('chatbotInput');
+const chatbotSend = document.getElementById('chatbotSend');
+const chatbotMessages = document.getElementById('chatbotMessages');
+const chatbotProgress = document.getElementById('chatbotProgress');
+const progressFill = document.getElementById('progressFill');
+const progressText = document.getElementById('progressText');
+
+// Toggle minimize/maximize
+function toggleChatbot() {
+    chatbotWidget.classList.toggle('minimized');
+    
+    // Update progress text based on new state
+    if (isModelLoading && chatbotProgress.style.display !== 'none') {
+        const currentProgress = progressFill.style.width;
+        const progressValue = parseInt(currentProgress) || 0;
+        progressText.textContent = `${progressValue}%`;
+    }
+}
+
+chatbotHeader.addEventListener('click', toggleChatbot);
+chatbotToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleChatbot();
+});
+
+// WebLLM Integration
+let engine = null;
+let isModelLoading = false;
+let isModelReady = false;
+let isGenerating = false;
+let startTime = 0;
+
+// System prompt for the chatbot
+const SYSTEM_PROMPT = `You are Songlin Hou's digital twin helping visitors learn about his professional portfolio.
+When answer questions, please use I to represent Songlin Hou.
+Songlin is a Software Engineer with 5+ years of experience at Dell Technologies as an A-Team member.
+
+Key information about Songlin:
+- Experience: 5+ years at Dell A-Team, leading complex projects in security automation, predictive analytics, AI-assisted troubleshooting, platform integration, containerization, and anomaly detection
+- Projects: CAC/PIV Certificate Management, Bug-Stomp Initiative, Performance Forecast Integration, Analytics Engine Dockerization, Anomaly Detection Platform
+- Skills: Security & Authentication, AI & Machine Learning, LLM Systems (Multi-Agent Systems, Tool Calling, Fine-tuning, RAG), Platform Engineering, Technical Leadership
+- LLM Expertise: Multi-agentic system design, tool calling frameworks, model fine-tuning, RAG (Retrieval-Augmented Generation), prompt engineering
+- Contact: songlinhou1993@gmail.com, LinkedIn: https://www.linkedin.com/in/songlin-hou
+- Research: https://songlinhou.github.io/
+
+Answer questions concisely and helpfully. If asked about topics not covered in Songlin's portfolio, politely redirect to relevant information.
+DO NOT MENTION ANYTHING THAT YOU ARE A LARGE LANGUAGE MODEL OR AI. FOR PERSONAL QUESTIONS OR ANY QUESTIONS OUTSIDE YOUR KNOWLEDGE OF SONGLIN HOU, LET VISITORS USE "SEND MESSAGE" FUNCTION IN THE "Get In Touch" SECTION.
+If you cannot answer the question based on the provided information, let the visitor to send message in the "Get In Touch" section. Also mention you can find more information on Songlin's LinkedIn or personal website.
+`;
+
+// Initialize WebLLM engine
+async function initializeWebLLM() {
+    if (isModelLoading || isModelReady) return;
+    
+    isModelLoading = true;
+    chatbotWidget.classList.add('is-loading');
+    startTime = Date.now();
+    
+    // Show progress bar
+    chatbotProgress.style.display = 'block';
+    progressFill.style.width = '0%';
+    progressText.textContent = 'Loading model...';
+    
+    try {
+        const webllm = await import("https://esm.run/@mlc-ai/web-llm");
+        
+        const initProgressCallback = (initProgress) => {
+            console.log("Model loading progress:", initProgress);
+            
+            // Update progress bar
+            if (initProgress.progress) {
+                const progress = Math.round(initProgress.progress * 100);
+                progressFill.style.width = `${progress}%`;
+                progressText.textContent = `${progress}%`;
+            }
+        };
+        
+        // Using Llama-3.2-3B model
+        const selectedModel = "Llama-3.2-3B-Instruct-q4f16_1-MLC";
+        
+        engine = await webllm.CreateMLCEngine(
+            selectedModel,
+            { initProgressCallback: initProgressCallback }
+        );
+        
+        isModelReady = true;
+        isModelLoading = false;
+        chatbotWidget.classList.remove('is-loading');
+        
+        // Hide progress bar and show ready message
+        chatbotProgress.style.display = 'none';
+        addMessage("Do you have any questions about me? I am happy to answer!", false);
+        
+    } catch (error) {
+        console.error("Failed to load WebLLM:", error);
+        isModelLoading = false;
+        chatbotWidget.classList.remove('is-loading');
+        
+        // Hide progress bar
+        chatbotProgress.style.display = 'none';
+        
+        addMessage("Sorry, I couldn't load the AI model. Please try again later or refresh the page.", false);
+        
+        // Fallback to simple responses
+        useFallbackResponses();
+    }
+}
+
+function addMessage(text, isUser = false, streaming = false) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+    const p = document.createElement('p');
+    messageDiv.appendChild(p);
+    chatbotMessages.appendChild(messageDiv);
+    if (!streaming && text) {
+        p.textContent = text;
+    }
+    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+    return p;
+}
+
+async function sendMessage() {
+    const message = chatbotInput.value.trim();
+    if (!message || isGenerating) return;
+    
+    // Add user message
+    addMessage(message, true);
+    chatbotInput.value = '';
+    
+    if (!isModelReady) {
+        if (!isModelLoading) {
+            initializeWebLLM();
+        } else {
+            addMessage("Please wait a moment for my AI brain to load...", false);
+        }
+        return;
+    }
+    
+    isGenerating = true;
+    try {
+        // Generate response using WebLLM
+        const messages = [
+            { role: "system", content: SYSTEM_PROMPT },
+            { role: "user", content: message }
+        ];
+        
+        const chunks = await engine.chat.completions.create({
+            messages: messages,
+            stream: true,
+            stream_options: { include_usage: true },
+        });
+        
+        const botP = addMessage('', false, true);
+        let botResponse = '';
+        for await (const chunk of chunks) {
+            const delta = chunk.choices[0]?.delta?.content || '';
+            if (delta) {
+                botResponse += delta;
+                botP.textContent = botResponse;
+                chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+            }
+        }
+    } catch (error) {
+        console.error("Error generating response:", error);
+        addMessage("Sorry, I encountered an error generating a response. Please try again.", false);
+    } finally {
+        isGenerating = false;
+    }
+}
+
+// Fallback responses if WebLLM fails
+function useFallbackResponses() {
+    const fallbackResponses = {
+        'experience': 'Songlin has 5+ years of experience as a Dell A-Team member, leading complex projects in security automation, predictive analytics, AI-assisted troubleshooting, and anomaly detection.',
+        'projects': 'Songlin has led several key projects including CAC/PIV Certificate Management, Bug-Stomp Initiative, Performance Forecast Integration, Analytics Engine Dockerization, and Anomaly Detection Platform.',
+        'skills': 'Songlin specializes in Security & Authentication, AI & Machine Learning, LLM Systems, Platform Engineering, and Technical Leadership.',
+        'contact': 'You can reach Songlin via email at songlinhou1993@gmail.com or LinkedIn at https://www.linkedin.com/in/songlin-hou',
+        'default': 'I\'m here to help! You can ask about Songlin\'s experience, projects, skills, or how to contact him.'
+    };
+    
+    window.getBotResponse = function(userMessage) {
+        const message = userMessage.toLowerCase();
+        for (const [keyword, response] of Object.entries(fallbackResponses)) {
+            if (message.includes(keyword)) {
+                return response;
+            }
+        }
+        return fallbackResponses.default;
+    };
+    
+    window.sendMessage = function() {
+        const message = chatbotInput.value.trim();
+        if (!message) return;
+        addMessage(message, true);
+        chatbotInput.value = '';
+        const botResponse = window.getBotResponse(message);
+        addMessage(botResponse, false);
+    };
+}
+
+// Send message on button click
+chatbotSend.addEventListener('click', sendMessage);
+
+// Send message on Enter key
+chatbotInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        sendMessage();
+    }
+});
+
+// Auto-load the model when page loads
+window.addEventListener('load', () => {
+    initializeWebLLM();
+});
+
 // Console welcome message
 console.log('%c Welcome to Songlin Hou\'s Portfolio! ', 
     'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-size: 20px; padding: 10px;');
